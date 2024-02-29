@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+  <title>Отталкивание окружностей от курсора</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const circles = [];
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Circle {
+      constructor(x, y, radius) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.color = getRandomColor();
+        this.speedX = Math.random() * 4 - 2; // случайная скорость по горизонтали
+        this.speedY = Math.random() * 4 - 2; // случайная скорость по вертикали
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        // Отталкивание от краев экрана
+        if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
+          this.speedX = -this.speedX;
+        }
+        if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) {
+          this.speedY = -this.speedY;
+        }
+
+        // Отталкивание от курсора
+        const distance = Math.sqrt((this.x - mouseX) ** 2 + (this.y - mouseY) ** 2);
+        if (distance < this.radius + 30) { // 30 - радиус "зоны влияния" курсора
+          const angle = Math.atan2(this.y - mouseY, this.x - mouseX);
+          this.speedX = Math.cos(angle) * 2;
+          this.speedY = Math.sin(angle) * 2;
+        }
+
+        this.draw();
+      }
+    }
+
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    function createCircles(numCircles) {
+      for (let i = 0; i < numCircles; i++) {
+        const radius = Math.random() * 30 + 10;
+        const x = Math.random() * (canvas.width - 2 * radius) + radius;
+        const y = Math.random() * (canvas.height - 2 * radius) + radius;
+        circles.push(new Circle(x, y, radius));
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      circles.forEach(circle => circle.update());
+      requestAnimationFrame(animate);
+    }
+
+    let mouseX, mouseY;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    createCircles(10); // количество окружностей
+    animate();
+  </script>
+</body>
+</html>

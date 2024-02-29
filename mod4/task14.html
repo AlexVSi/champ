@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #colorSquare {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+    <title>Изменение цвета квадрата</title>
+</head>
+<body id="body">
+
+<div id="colorSquare"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Получаем ссылку на элемент с id "colorSquare"
+        var body = document.getElementById("body");
+        var colorSquare = document.getElementById("colorSquare");
+
+        // Обработчик события перемещения мыши
+        document.addEventListener("mousemove", function (event) {
+            // Получаем положение курсора мыши по горизонтали
+            var mouseX = event.clientX;
+
+            // Получаем ширину окна браузера
+            var windowWidth = window.innerWidth;
+
+            // Вычисляем относительное положение курсора мыши
+            var relativeX = mouseX / windowWidth;
+
+            // Изменяем цвет квадрата в зависимости от положения курсора мыши
+            if (relativeX <= 0.5) {
+                // Левая часть экрана - белый цвет
+                colorSquare.style.backgroundColor = "white";
+            } else {
+                // Правая часть экрана - черный цвет
+                colorSquare.style.backgroundColor = "black";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
