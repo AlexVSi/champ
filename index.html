@@ -1,13 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Vue</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="nullstyle.css">
+	<link rel="stylesheet" href="style.css">
+	<title>Vue</title>
+</head>
+
+<body>
+	<div id="app">
+		<h1>Страница с постами</h1>
+		<button class="btn" @click="showDialog" style="margin: 15px 0">Создать пост</button>
+		<div class="dialog" v-if="dialogVisiable" @click.stop="hideDialog">
+			<div class="dialog__contnent" @click.stop>
+				<form action="" @submit.prevent>
+					<h3>Создание поста</h3>
+					<input
+						v-model="title"
+						type="text"
+						placeholder="Название">
+					<input
+						v-model="body"
+						type="text"
+						placeholder="Описание">
+					<button class="btn" @click="createPost">Создать</button>
+				</form>
+			</div>
+		</div>
+
+		<div class="posts" v-if="posts.length > 0">
+			<h2>Список постов</h2>
+			<div class="post" v-for="post in posts" :key="post.id">
+				<div>
+					<div><strong>Название: </strong>{{post.title}}</div>
+					<div><strong>Описание: </strong>{{post.body}}</div>
+				</div>
+				<div class="post__btn">
+					<button class="btn" @click='removePost(post)'>Удалить</button>
+				</div>
+			</div>
+		</div>
+		<h2 v-else>Постов нет</h2>
+
+	</div>
+	<script src="./vue.js"></script>
+	<script src="./script.js"></script>
+</body>
 </html>
